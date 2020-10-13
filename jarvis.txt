@@ -1,0 +1,87 @@
+import pyttsx3 				#module is used for voice to speech convertor
+import datetime				#module is import to get date and time it is by deafault installed on pc
+import speech_recognition as sr		#coverts speech to text
+import wikipedia			#take information from wikipedia
+import webbrowser			#start the browser actitvity like google,youtube,stackoverflow
+import os				#start os application like music,video
+
+engine = pyttsx3.init()			#initialize the fuction of pyttsx3 modules into engine
+rate = engine.getProperty("rate")	#it tells the speed of jarvis
+engine.setProperty("rate",170)		#set propery function set the speed of voice,if we change(107) value then it change speed
+
+volume = engine.getProperty("volume")
+engine.setProperty("volume",120)
+
+voices = engine.getProperty("voices")
+engine.setProperty("voice",voices[0].id)
+
+def speak(audio):
+    engine.say(audio)
+    engine.runAndWait()
+
+def wishme():
+    hour = int(datetime.datetime.now().hour)
+    if hour>=0 and hour<12:
+        speak("good morning sir")
+
+    elif hour>12 and hour<4:
+        speak("good afternoon sir")
+
+    else:
+        speak("good evening sir")
+
+    speak("I am jarvis sir,please tell me how may I help you")
+
+def takecommand():
+    r=sr.Recognizer()
+    with sr.Microphone() as source:
+        print("listening......")
+        r.pause_threshold = 1
+        audio = r.listen(source)
+
+    try:
+        print ("Recognizing....")
+        query = r.recognize_google(audio,language='en-in')
+        print (query)
+
+    except Exception as e:
+        print ("say that again please....")
+        return "None"
+    return query
+
+if __name__=="__main__":
+    speak("hello sir")
+    speak("what can i do for u sir")
+    #wishme()
+    if 1:
+        query = takecommand().lower()
+
+        if'wikipedia' in query:
+            speak('searching wikipedia...')
+            query = query.replace("wikipedia","")
+            results = wikipedia.summary(query,sentences=2)
+            print (results)
+            speak(results)
+
+        elif 'open youtube' in query:
+            webbrowser.open("youtube.com")
+
+        elif 'open google' in query:
+            webbrowser.open("google.com")
+
+        elif 'play song' in query:
+            music_dir = "F:\\song"
+            songs = os.listdir(music_dir)
+            print (songs)
+            os.startfile(os.path.join(music_dir,songs[0]))
+
+        elif'the time' in query:
+            strtime = datetime.datetime.now().strftime("%H.%M")
+            speak("sir the time is"+strtime)
+
+        elif'boss' in query:
+            speak("my boss id dinesh kumar sirvi")
+
+        elif'your name' in query:
+            speak("my name is jarvis sir")
+
